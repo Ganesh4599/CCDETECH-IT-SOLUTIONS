@@ -1,0 +1,84 @@
+Text File Encryption/Decryption 
+In this task, I have created a program that can encrypt and decrypt a text file using a simple Caesar cipher 
+In that each letter is shifted a certain number of positions in the alphabet. 
+It Allows user to input the key for encryption and decryption.
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class FileEncryptionDecryption {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("File Encryption/Decryption Program");
+        System.out.print("Enter the path of the text file: ");
+        String filePath = scanner.nextLine();
+
+        try {
+            String originalText = readFile(filePath);
+
+            System.out.print("Enter the key for encryption/decryption (an integer): ");
+            int key = scanner.nextInt();
+
+            String encryptedText = encrypt(originalText, key);
+            String decryptedText = decrypt(encryptedText, key);
+
+            System.out.println("\nOriginal Text:\n" + originalText);
+            System.out.println("\nEncrypted Text:\n" + encryptedText);
+            System.out.println("\nDecrypted Text:\n" + decryptedText);
+
+            System.out.print("\nDo you want to save the decrypted text to a new file? (yes/no): ");
+            scanner.nextLine();  // Consume the newline character
+            String response = scanner.nextLine().toLowerCase();
+
+            if (response.equals("yes")) {
+                System.out.print("Enter the path for the decrypted text file: ");
+                String decryptedFilePath = scanner.nextLine();
+                saveToFile(decryptedFilePath, decryptedText);
+                System.out.println("Decrypted text saved to file: " + decryptedFilePath);
+            }
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file: " + e.getMessage());
+        }
+    }
+
+    public static String readFile(String filePath) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        }
+        return content.toString();
+    }
+
+    public static void saveToFile(String filePath, String content) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(content);
+        }
+    }
+
+    public static String encrypt(String text, int key) {
+        StringBuilder encryptedText = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            if (Character.isLetter(c)) {
+                char base = Character.isUpperCase(c) ? 'A' : 'a';
+                encryptedText.append((char) ((c - base + key) % 26 + base));
+            } else {
+                encryptedText.append(c);
+            }
+        }
+        return encryptedText.toString();
+    }
+
+    public static String decrypt(String encryptedText, int key) {
+        return encrypt(encryptedText, 26 - key);  // Decryption is just encryption with the opposite key
+    }
+}
