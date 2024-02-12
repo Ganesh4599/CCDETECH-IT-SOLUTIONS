@@ -1,0 +1,120 @@
+Tic-Tac-Toe Game 
+In this, I Developed a text-based Tic-Tac-Toe game where two players are there (human and human or human and computer) 
+It takes turns placing their marks on a 3x3 grid. 
+The program will check for wins, draws, and handle invalid moves.
+
+
+
+import java.util.Scanner;
+import java.util.Random;
+
+public class TicTacToe {
+
+    static char[][] board = {
+            {' ', ' ', ' '},
+            {' ', ' ', ' '},
+            {' ', ' ', ' '}
+    };
+
+    static char currentPlayer = 'X';
+
+    public static void printBoard() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j]);
+                if (j < 2) {
+                    System.out.print(" | ");
+                }
+            }
+            System.out.println();
+            if (i < 2) {
+                System.out.println("---------");
+            }
+        }
+        System.out.println();
+    }
+
+    public static boolean isWinner() {
+        // Check rows, columns, and diagonals for a win
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == currentPlayer && board[i][1] == currentPlayer && board[i][2] == currentPlayer) {
+                return true; // Row
+            }
+            if (board[0][i] == currentPlayer && board[1][i] == currentPlayer && board[2][i] == currentPlayer) {
+                return true; // Column
+            }
+        }
+        if (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == currentPlayer) {
+            return true; // Diagonal
+        }
+        if (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer) {
+            return true; // Diagonal
+        }
+        return false;
+    }
+
+    public static boolean isBoardFull() {
+        // Check if the board is full
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isValidMove(int row, int col) {
+        // Check if the move is within the board and the cell is empty
+        return 0 <= row && row < 3 && 0 <= col && col < 3 && board[row][col] == ' ';
+    }
+
+    public static void getHumanMove() {
+        Scanner scanner = new Scanner(System.in);
+        int row, col;
+        do {
+            System.out.print("Enter the row (0, 1, or 2): ");
+            row = scanner.nextInt();
+            System.out.print("Enter the column (0, 1, or 2): ");
+            col = scanner.nextInt();
+        } while (!isValidMove(row, col));
+        board[row][col] = currentPlayer;
+    }
+
+    public static void getComputerMove() {
+        Random random = new Random();
+        int row, col;
+        do {
+            row = random.nextInt(3);
+            col = random.nextInt(3);
+        } while (!isValidMove(row, col));
+        board[row][col] = currentPlayer;
+    }
+
+    public static void main(String[] args) {
+        while (true) {
+            printBoard();
+
+            if (currentPlayer == 'X') {
+                System.out.println("\nPlayer X's turn:");
+                getHumanMove();
+            } else {
+                System.out.println("\nPlayer O's turn:");
+                getComputerMove();
+            }
+
+            if (isWinner()) {
+                printBoard();
+                System.out.println("\nPlayer " + currentPlayer + " wins!");
+                break;
+            } else if (isBoardFull()) {
+                printBoard();
+                System.out.println("\nIt's a draw!");
+                break;
+            } else {
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+            }
+        }
+    }
+}
