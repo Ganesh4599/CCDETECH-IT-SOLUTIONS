@@ -1,0 +1,189 @@
+Student Grade Management System 
+In this task, I developed a program that can store information of students like (name, roll number, subject marks) and calculate their overall percentage and grade
+based on pre-defined grade criteria. 
+It also Includes, To Include the ability to add, update, and delete student records.
+
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class StudentGradeManagementSystem {
+
+    static Map<Integer, Student> students = new HashMap<>();
+    static int rollNumberCounter = 1;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Student Grade Management System");
+            System.out.println("1. Add Student");
+            System.out.println("2. Update Student");
+            System.out.println("3. Delete Student");
+            System.out.println("4. View All Students");
+            System.out.println("5. Exit");
+
+            System.out.print("Choose operation (1-5): ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addStudent();
+                    break;
+                case 2:
+                    updateStudent();
+                    break;
+                case 3:
+                    deleteStudent();
+                    break;
+                case 4:
+                    viewAllStudents();
+                    break;
+                case 5:
+                    System.out.println("Exiting the Student Grade Management System. Goodbye!");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please choose a valid operation (1-5).");
+            }
+        }
+    }
+
+    public static void addStudent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter student name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter marks in English: ");
+        double englishMarks = scanner.nextDouble();
+        System.out.print("Enter marks in Math: ");
+        double mathMarks = scanner.nextDouble();
+        System.out.print("Enter marks in Science: ");
+        double scienceMarks = scanner.nextDouble();
+
+        Student student = new Student(rollNumberCounter++, name, englishMarks, mathMarks, scienceMarks);
+        students.put(student.getRollNumber(), student);
+
+        System.out.println("Student added successfully!");
+    }
+
+    public static void updateStudent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the roll number of the student to update: ");
+        int rollNumber = scanner.nextInt();
+
+        if (students.containsKey(rollNumber)) {
+            System.out.print("Enter new marks in English: ");
+            double englishMarks = scanner.nextDouble();
+            System.out.print("Enter new marks in Math: ");
+            double mathMarks = scanner.nextDouble();
+            System.out.print("Enter new marks in Science: ");
+            double scienceMarks = scanner.nextDouble();
+
+            Student student = students.get(rollNumber);
+            student.setEnglishMarks(englishMarks);
+            student.setMathMarks(mathMarks);
+            student.setScienceMarks(scienceMarks);
+
+            System.out.println("Student information updated successfully!");
+        } else {
+            System.out.println("Student with the given roll number not found.");
+        }
+    }
+
+    public static void deleteStudent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the roll number of the student to delete: ");
+        int rollNumber = scanner.nextInt();
+
+        if (students.containsKey(rollNumber)) {
+            students.remove(rollNumber);
+            System.out.println("Student deleted successfully!");
+        } else {
+            System.out.println("Student with the given roll number not found.");
+        }
+    }
+
+    public static void viewAllStudents() {
+        if (students.isEmpty()) {
+            System.out.println("No students found.");
+        } else {
+            System.out.println("Roll Number\tName\t\tPercentage\tGrade");
+            for (Student student : students.values()) {
+                System.out.println(student);
+            }
+        }
+    }
+}
+
+class Student {
+    private int rollNumber;
+    private String name;
+    private double englishMarks;
+    private double mathMarks;
+    private double scienceMarks;
+
+    public Student(int rollNumber, String name, double englishMarks, double mathMarks, double scienceMarks) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+        this.englishMarks = englishMarks;
+        this.mathMarks = mathMarks;
+        this.scienceMarks = scienceMarks;
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getEnglishMarks() {
+        return englishMarks;
+    }
+
+    public void setEnglishMarks(double englishMarks) {
+        this.englishMarks = englishMarks;
+    }
+
+    public double getMathMarks() {
+        return mathMarks;
+    }
+
+    public void setMathMarks(double mathMarks) {
+        this.mathMarks = mathMarks;
+    }
+
+    public double getScienceMarks() {
+        return scienceMarks;
+    }
+
+    public void setScienceMarks(double scienceMarks) {
+        this.scienceMarks = scienceMarks;
+    }
+
+    public double calculatePercentage() {
+        return (englishMarks + mathMarks + scienceMarks) / 3;
+    }
+
+    public String calculateGrade() {
+        double percentage = calculatePercentage();
+        if (percentage >= 90) {
+            return "A";
+        } else if (percentage >= 80) {
+            return "B";
+        } else if (percentage >= 70) {
+            return "C";
+        } else if (percentage >= 60) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return rollNumber + "\t\t" + name + "\t\t" + calculatePercentage() + "%\t\t" + calculateGrade();
+    }
+}
